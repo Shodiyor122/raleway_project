@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ralewayapp/theme/style.dart';
 // api_service faylidan import qilingan
 
 class LoginPage extends StatefulWidget {
@@ -13,22 +14,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   //<----Methods---->
-
-  // void showFailDialog() => showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //           title: const Text('Xatolik'),
-  //           content: const Text('Username yokida Password xato'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //               child: const Text('Yopish'),
-  //             )
-  //           ]);
-  //     });
 
   void login() {}
   //<---Widgets---->
@@ -72,10 +57,8 @@ class _LoginPageState extends State<LoginPage> {
         loginButton
       ]));
 
-  PreferredSizeWidget get appBar => AppBar(
-      backgroundColor: Colors.blue,
-      title: const Text("Login Page",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)));
+  PreferredSizeWidget get appBar =>
+      AppBar(title: Text("Login Page", style: Style.body3w5));
 
   @override
   Widget build(BuildContext context) => Scaffold(appBar: appBar, body: view);
