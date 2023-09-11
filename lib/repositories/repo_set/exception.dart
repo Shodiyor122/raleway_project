@@ -12,28 +12,28 @@ class RepositoryException implements Exception {
   DateTime creation = DateTime.now();
   String message = _DEFAULT_MESSAGE;
   String messageWithoutSubBody = _DEFAULT_MESSAGE;
-
+  Map<String, dynamic> errorData = {};
   Map<String, dynamic> errors = _DEFAULT_ERRORS;
   int? status;
   int? errorNumber;
 
   RepositoryException(http.Response errorResponse) {
-    this.raw = errorResponse;
+    raw = errorResponse;
 
     if (errorResponse.body.isNotEmpty) {
-      this.status = errorResponse.statusCode;
+      status = errorResponse.statusCode;
       try {
         // Parse response's body.
         Map<String, dynamic> data = json.decode(errorResponse.body);
-        this.errorNumber = errorResponse.statusCode;
-        this.messageWithoutSubBody = data['message'] ?? _DEFAULT_MESSAGE;
-        this.message = data['error']?["details"]?[0]['messages']?[0]
-                ["message"] ??
+        errorNumber = errorResponse.statusCode;
+        errorData = data;
+        messageWithoutSubBody = data['message'] ?? _DEFAULT_MESSAGE;
+        message = data['error']?["details"]?[0]['messages']?[0]["message"] ??
             _DEFAULT_MESSAGE;
-        this.errors = data['errors'] ?? _DEFAULT_ERRORS;
+        errors = data['errors'] ?? _DEFAULT_ERRORS;
       } catch (e) {
         // If the body wasn't a JSON object, then must be a plain text error.
-        this.message =
+        message =
             errorResponse.body.isEmpty ? _DEFAULT_MESSAGE : errorResponse.body;
       }
     }
@@ -44,12 +44,12 @@ class RepositoryException implements Exception {
     // 1. ClientException: Connection closed before full header was received.
     // 2. TypeError: type '(HttpException) => Null' is not a subtype of type '(dynamic) => dynamic'.
     // In both cases we are only interested on the message, not on the full object.
-    this.message = exp.toString();
+    message = exp.toString();
   }
 //TODO: 403 status should be fixed from backend
 
   bool unauthorized() {
-    return this.status == 401 || this.status == 400 || this.status == 403;
+    return status == 401 || status == 400 || status == 403;
   }
 
   @override
