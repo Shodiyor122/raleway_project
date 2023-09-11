@@ -2,8 +2,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String introKey = 'RalewayIntro';
 const String tokenKey = 'RalewayToken';
-class Preferences
- {
+const String userStatusKey = 'RalewayUserStatus';
+
+class Preferences {
   static Future<bool> setIntroFinished(bool finished) async {
     final preferences = await SharedPreferences.getInstance();
     final isSaved = await preferences.setBool(introKey, finished);
@@ -34,4 +35,15 @@ class Preferences
     return isRemoved;
   }
 
+  static Future<bool> setUserStatus(bool userStatus) async {
+    final preferences = await SharedPreferences.getInstance();
+    final isSaved = await preferences.setBool(userStatusKey, userStatus);
+    return isSaved;
+  }
+
+  static Future<bool> getUserStatus() async {
+    final preferences = await SharedPreferences.getInstance();
+    final userStatus = preferences.getBool(userStatusKey) ?? false;
+    return userStatus;
+  }
 }

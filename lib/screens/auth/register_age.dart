@@ -21,18 +21,25 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+  //<----Life cycle---->
+
   @override
   void initState() {
     CustomStaticShowToast.initFToast(context);
 
     super.initState();
   }
+  //<---Listeners---->
+
+  void registerListener(_, state) {
+    if (state is RegisterComplitedState) openLogin();
+  }
   //<---Methods---->
 
   void openLogin() => Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (context) => const LoginPage()));
 
-  void registerPhone() {
+  void register() {
     String phoneIdentifier = "+998${_phoneController.text.replaceAll(" ", "")}";
 
     context.read<RegisterBloc>().add(RegisterUserEvent({
@@ -41,7 +48,6 @@ class _RegisterPageState extends State<RegisterPage> {
           "username": _usernameController.text.trim(),
           "phone": phoneIdentifier,
         }));
-    openLogin();
   }
 
   void checkRegister() {
@@ -67,13 +73,14 @@ class _RegisterPageState extends State<RegisterPage> {
           "Phone field should contain 12 digits",
           isError: true);
 
-    registerPhone();
+    register();
   }
 
   //<---Widgets---->
 
-  Widget get textofLoginin => const Text("Register in",
-      style: TextStyle(fontSize: 25, color: Colors.blue));
+  Widget get registerTitle => Center(
+      child: Text("Register",
+          style: Style.headline3w5.copyWith(color: Style.colors.primary)));
 
   Widget registerPrimaryTextField(
           TextEditingController controller, String title) =>
@@ -83,13 +90,16 @@ class _RegisterPageState extends State<RegisterPage> {
           TextEditingController controller, String title) =>
       TextInputField.phone(controller: controller, title: title);
 
-  Widget get registerButton =>
-      Button.primary(onPressed: checkRegister, text: "Register");
+  Widget get registerButton => BlocConsumer<RegisterBloc, RegisterState>(
+      listener: registerListener,
+      builder: (context, state) => Button.primary(
+          onPressed: checkRegister,
+          spinner: state is RegisterLoadingState,
+          text: "Register"));
 
-  Widget get view => Padding(
-      padding: const EdgeInsets.only(top: 60, left: 16, right: 16),
-      child: ListView(children: [
-        textofLoginin,
+  Widget get view => ListView(padding: Style.padding16, children: [
+        const SizedBox(height: 32),
+        registerTitle,
         const SizedBox(height: 16),
         registerPrimaryTextField(_nameController, "Name"),
         const SizedBox(height: 16),
@@ -98,9 +108,9 @@ class _RegisterPageState extends State<RegisterPage> {
         registerPrimaryTextField(_usernameController, "Username"),
         const SizedBox(height: 16),
         registerPhoneTextField(_phoneController, "Phone Nimber"),
-        const SizedBox(height: 60),
+        const SizedBox(height: 300),
         registerButton
-      ]));
+      ]);
 
   PreferredSizeWidget get appBar =>
       AppBar(title: Text("Register Page", style: Style.body3w5));

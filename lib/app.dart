@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ralewayapp/bloc/login/login_bloc.dart';
 import 'package:ralewayapp/bloc/register/register_bloc.dart';
-import 'package:ralewayapp/screens/auth/login_page.dart';
+import 'package:ralewayapp/switcher.dart';
 import 'package:ralewayapp/theme/theme.dart';
 
 class RalewayApp extends StatefulWidget {
@@ -15,11 +16,12 @@ class _RalewayAppState extends State<RalewayApp> {
   Widget get materialApp => MaterialApp(
       title: 'Railway app',
       theme: theme,
-      home: const LoginPage(),
+      home: const Switcher(),
       debugShowCheckedModeBanner: false);
 
   @override
   Widget build(BuildContext context) => MultiBlocProvider(providers: [
         BlocProvider(create: (_) => RegisterBloc()),
+        BlocProvider(create: (_) => LoginBloc())
       ], child: materialApp);
 }
