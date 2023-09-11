@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ralewayapp/bloc/login/login_bloc.dart';
+import 'package:ralewayapp/bloc/products/products_bloc.dart';
 import 'package:ralewayapp/bloc/register/register_bloc.dart';
 import 'package:ralewayapp/bloc/user/user_bloc.dart';
 import 'package:ralewayapp/switcher.dart';
@@ -24,6 +25,7 @@ class _RalewayAppState extends State<RalewayApp> {
   Widget build(BuildContext context) => MultiBlocProvider(providers: [
         BlocProvider(create: (_) => RegisterBloc()),
         BlocProvider(create: (_) => LoginBloc()),
-        BlocProvider(create: (_) => UserBloc())
+        BlocProvider(create: (_) => UserBloc()),
+        BlocProvider(create: (_) => ProductsBloc())
       ], child: materialApp);
 }

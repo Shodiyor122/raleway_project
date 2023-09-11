@@ -1,39 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ralewayapp/bloc/products/products_bloc.dart';
 import 'package:ralewayapp/bloc/user/user_bloc.dart';
+import 'package:ralewayapp/cells/activity_indicator.dart';
 import 'package:ralewayapp/cells/button.dart';
 import 'package:ralewayapp/cells/cards/product.dart';
+import 'package:ralewayapp/cells/try_again.dart';
 import 'package:ralewayapp/models/product.dart';
 import 'package:ralewayapp/models/user.dart';
 import 'package:ralewayapp/theme/style.dart';
 
-class HomePage extends StatefulWidget {
+class Dashboard extends StatefulWidget {
   final User user;
-  const HomePage({Key? key, required this.user}) : super(key: key);
+  const Dashboard({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DashboardState extends State<Dashboard> {
+  //<----Life cycle---->
+
+  @override
+  void initState() {
+    fetchProducts();
+    super.initState();
+  }
+
   //<----Methods---->
   void logout() => context.read<UserBloc>().add(LogOutUserEvent());
+
+  void fetchProducts() => context.read<ProductsBloc>().add(GetProductsEvent());
 
 //<----Widgets---->
 
   Widget get textRecents =>
       const Text("Oxirgi o'zgarishlar tarixi", style: TextStyle(fontSize: 20));
 
-  Widget get listviewOfRecents => Expanded(
-          child: ListView(padding: const EdgeInsets.all(8), children: <Widget>[
-        ProductCard(
-            product: Product(
-                id: 0,
-                name: "Aluminy",
-                amount: 3232,
-                size: "kg",
-                price: "3003"))
-      ]));
+  Widget productList(List<Product> products) => ListView.separated(
+      itemCount: products.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      separatorBuilder: (_, __) => const SizedBox(height: 24),
+      itemBuilder: (context, index) => ProductCard(product: products[index]));
+
+  Widget get productListStateChecker =>
+      BlocBuilder<ProductsBloc, ProductsState>(builder: (context, state) {
+        if (state is ProductsCompliedState) return productList(state.products);
+        if (state is ProductsFailedState)
+          return TryAgain(onTapTryAgain: () => fetchProducts());
+        return const ActivityIndicator();
+      });
 
   Widget get blogText => Text("3 - BLOG",
       style: TextStyle(
@@ -47,26 +64,20 @@ class _HomePageState extends State<HomePage> {
           border: Border.all(color: Colors.blue, width: 4)),
       child: blogText);
 
-  Widget get view => Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SafeArea(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-            blogBox,
-            const SizedBox(height: 10),
-            textRecents,
-            listviewOfRecents
-          ])));
+  Widget get view => SafeArea(
+          child: ListView(padding: Style.padding16, children: [
+        blogBox,
+        const SizedBox(height: 10),
+        textRecents,
+        const SizedBox(height: 16),
+        productListStateChecker
+      ]));
 
   PreferredSizeWidget get appBar => AppBar(
       backgroundColor: const Color.fromARGB(255, 66, 141, 212),
-      title: const Text("Nematov Xurishid",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)));
-
-  Widget get idTitle => Text("ID: ${widget.user.name}", style: Style.body3w4);
-  Widget get userName =>
-      Text("Name: ${widget.user.name}", style: Style.body3w4);
+      title: Text(widget.user.name ?? "",
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold)));
 
   TextSpan drawerText(String text) =>
       TextSpan(text: text, style: Style.body2w4);
@@ -101,8 +112,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: appBar,
         body: view,
-        drawer: Drawer(
-          child: drawerView,
-        ),
+        drawer: Drawer(child: drawerView),
       );
 }

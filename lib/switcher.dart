@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ralewayapp/bloc/user/user_bloc.dart';
 import 'package:ralewayapp/cells/activity_indicator.dart';
 import 'package:ralewayapp/screens/auth/login_page.dart';
-import 'package:ralewayapp/screens/home_page.dart';
+import 'package:ralewayapp/screens/dashboard.dart';
 import 'package:ralewayapp/theme/style.dart';
 
 class Switcher extends StatefulWidget {
@@ -34,7 +34,7 @@ class _SwitcherState extends State<Switcher> {
         if (state is UserCompliedState &&
             state.user != null &&
             state.user!.status != null &&
-            state.user!.status!) return HomePage(user: state.user!);
+            state.user!.status!) return Dashboard(user: state.user!);
 
         return const LoginPage();
       });
