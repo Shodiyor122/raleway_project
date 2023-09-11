@@ -8,8 +8,10 @@ class ProductCard extends StatelessWidget {
   Widget get id => Text("id: ${product.id}",
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500));
 
-  Widget get name => Text("name: ${product.name}",
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400));
+  Widget get name => Expanded(
+        child: Text("name: ${product.name}",
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
+      );
 
   Widget get idAndName => Row(children: [id, const SizedBox(width: 16), name]);
 
@@ -20,11 +22,11 @@ class ProductCard extends StatelessWidget {
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w300));
 
   Widget get amountAndSize =>
-      Row(children: [amount, const SizedBox(width: 16), size]);
+      Row(children: [amount, const SizedBox(width: 8), size]);
 
-  Widget get price => Text("price: ${product.price}",
+  Widget get price => Text("price: ${product.price} sum",
       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w300));
-      
+
   Widget get viewBody => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
       child: Column(
