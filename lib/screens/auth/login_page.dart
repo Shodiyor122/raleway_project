@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:ralewayapp/screens/auth/register_age.dart';
 // api_service faylidan import qilingan
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,120 +14,69 @@ class _LoginPageState extends State<LoginPage> {
 
   //<----Methods---->
 
-  Future<void> login(BuildContext context) async {
-    try {
-      Response response = await post(
-        Uri.parse("https://e-work.up.railway.app/auth/login"),
-        body: {
-          "username": _usernameController.text.toString(),
-          'password': _passwordController.text.toString()
-        },
-      );
+  // void showFailDialog() => showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //           title: const Text('Xatolik'),
+  //           content: const Text('Username yokida Password xato'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: const Text('Yopish'),
+  //             )
+  //           ]);
+  //     });
 
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body.toString());
-        print(data['token']);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const RegisterPage()),
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Xatolik'),
-              content: const Text('Username yokida Password xato'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Yopish'),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
+  void login() {}
   //<---Widgets---->
 
-  Widget get openRegisterPage => GestureDetector(
-      onTap: () {
-        login(context);
-      },
+  Widget get loginButtonBody => const Center(
+      child: Text("Login",
+          style: TextStyle(
+              fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)));
+
+  Widget get loginButton => GestureDetector(
+      onTap: login,
       child: Padding(
           padding: const EdgeInsets.only(top: 350.0),
           child: Container(
               padding: const EdgeInsets.only(top: 20, bottom: 20),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                  child: Text("Login",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ))))));
+                  color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+              child: loginButtonBody)));
 
-  Widget get entringPassword => Expanded(
-      flex: 0,
-      child: Container(
+  Widget loginTextField(TextEditingController controller, String labelText) =>
+      Container(
           padding: const EdgeInsets.only(left: 10),
           decoration: BoxDecoration(border: Border.all()),
           child: TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ))));
+              controller: controller,
+              decoration: InputDecoration(labelText: labelText)));
 
-  Widget get entringUsername => Expanded(
-      flex: 0,
-      child: Container(
-          padding: const EdgeInsets.only(left: 10),
-          decoration: BoxDecoration(border: Border.all()),
-          child: TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
-              ))));
+  Widget get loginInTitle => const Text("Login in",
+      style: TextStyle(fontSize: 25, color: Colors.blue));
 
-  Widget get textofLoginin => const Text("Login in",
-      style: TextStyle(
-        fontSize: 25,
-        color: Colors.blue,
-      ));
+  Widget get view => Padding(
+      padding: const EdgeInsets.only(top: 60, left: 16, right: 16),
+      child: Column(children: [
+        loginInTitle,
+        const SizedBox(height: 20),
+        loginTextField(_usernameController, "Username"),
+        const SizedBox(height: 16.0),
+        loginTextField(_passwordController, "Password"),
+        const SizedBox(height: 20),
+        loginButton
+      ]));
 
   PreferredSizeWidget get appBar => AppBar(
       backgroundColor: Colors.blue,
       title: const Text("Login Page",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          )));
-
-  Widget get loginPage => Scaffold(
-      appBar: appBar,
-      body: Padding(
-          padding: const EdgeInsets.only(top: 60, left: 16, right: 16),
-          child: Column(children: [
-            textofLoginin,
-            const SizedBox(height: 20),
-            entringUsername,
-            const SizedBox(height: 16.0),
-            entringPassword,
-            const SizedBox(height: 20),
-            openRegisterPage,
-          ])));
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)));
 
   @override
-  Widget build(BuildContext context) => loginPage;
+  Widget build(BuildContext context) => Scaffold(appBar: appBar, body: view);
 }
