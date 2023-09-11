@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ralewayapp/bloc/login/login_bloc.dart';
+import 'package:ralewayapp/bloc/user/user_bloc.dart';
 import 'package:ralewayapp/cells/button.dart';
 import 'package:ralewayapp/cells/text_field.dart';
 import 'package:ralewayapp/constants.dart';
@@ -33,11 +34,15 @@ class _LoginPageState extends State<LoginPage> {
     if (state is! LoginCompliedState) return;
 
     if (state.loginData.status == null) return;
-    if (!state.loginData.status!) return;
-
-    openregister();
+    if (!state.loginData.status!) {
+      openregister();
+    } else {
+      fetchUserMe();
+    }
   }
   //<----Methods---->
+
+  void fetchUserMe() => context.read<UserBloc>().add(GetUserEvent());
 
   void openregister() => Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (context) => const RegisterPage()));

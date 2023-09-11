@@ -41,19 +41,19 @@ class Button extends StatelessWidget {
         borderColor = null,
         super(key: key);
 
-  const Button.text({
-    Key? key,
-    this.color,
-    this.child,
-    this.text,
-    this.textColor,
-    this.padding,
-    @required this.onPressed,
-    this.spinner = false,
-    this.height,
-  })  : type = ButtonType.text,
+  const Button.text(
+      {Key? key,
+      this.color,
+      this.child,
+      this.text,
+      this.textColor,
+      this.padding,
+      @required this.onPressed,
+      this.spinner = false,
+      this.height,
+      this.minWidth})
+      : type = ButtonType.text,
         shape = null,
-        minWidth = null,
         icon = null,
         iconSize = null,
         iconColor = null,
@@ -128,7 +128,8 @@ class Button extends StatelessWidget {
 
       case ButtonType.text:
         widget = Text(text!,
-            style: Style.bodyw5.copyWith(color: Style.colors.primary));
+            style: Style.bodyw5
+                .copyWith(color: textColor ?? Style.colors.primary));
         break;
 
       case ButtonType.delete:

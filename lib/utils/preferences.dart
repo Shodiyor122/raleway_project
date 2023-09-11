@@ -46,4 +46,10 @@ class Preferences {
     final userStatus = preferences.getBool(userStatusKey) ?? false;
     return userStatus;
   }
+
+  static Future<bool> removeUserStatus() async {
+    final preferences = await SharedPreferences.getInstance();
+    final isRemoved = await preferences.remove(userStatusKey);
+    return isRemoved;
+  }
 }
